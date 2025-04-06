@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShipFast Quotes | Daily Inspiration for Builders",
+  title: "ShitFast  | Daily Dopamine for Builders",
   description:
     "Daily dopamine for founders and makers who love to ship fast and build products",
   icons: {
