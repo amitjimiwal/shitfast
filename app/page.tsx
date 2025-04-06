@@ -1,103 +1,168 @@
-import Image from "next/image";
+import { Suspense } from "react";
+import QuoteDisplay from "./components/QuoteDisplay";
+import PreviousQuotes from "./components/PreviousQuotes";
+import SubmitQuoteButton from "./components/SubmitQuoteButton";
+import {
+  Sparkles,
+  Zap,
+  Twitter,
+  Github,
+} from "lucide-react";
+const SAMPLE_QUOTE = {
+  id: "1",
+  text: "The best way to build a product is to start shipping on day one. Iterate relentlessly.",
+  author: "Founder McShipFast",
+  authorUsername: "foundermcship",
+  submittedAt: new Date().toISOString(),
+  approved: true,
+  featured: true,
+  featuredDate: new Date().toISOString(),
+  score: 0.95,
+};
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 -z-10">
+        {/* Animated grid */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(120,41,226,0.15)_0,_rgba(0,0,0,0)_50%)]"></div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+        {/* Animated blobs */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600/20 rounded-full mix-blend-overlay filter blur-3xl opacity-70 animate-blob"></div>
+        <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-cyan-400/20 rounded-full mix-blend-overlay filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-fuchsia-600/20 rounded-full mix-blend-overlay filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+
+        {/* Noise texture overlay */}
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay"></div>
+      </div>
+
+      <main className="container mx-auto px-4 py-12 max-w-4xl relative z-10">
+        <header className="mb-16 text-center">
+          <div className="inline-block animate-bounce-slow mb-4">
+            <div className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-cyan-400 px-4 py-1 rounded-full text-sm font-medium">
+              <Sparkles size={14} />
+              <span>ship faster. build better.</span>
+            </div>
+          </div>
+
+          <h1 className="text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">
+            ShitFast
+          </h1>
+
+          <p className="text-lg text-gray-300 max-w-lg mx-auto relative">
+            <span className="absolute -left-8 top-0 text-purple-400 animate-pulse">
+              {"<"}
+            </span>
+            Daily dose of dopamine for builders who don&apos;t just dream but
+            ship
+            <span className="absolute -right-8 top-0 text-purple-400 animate-pulse">
+              {"/>"}
+            </span>
+          </p>
+        </header>
+
+        <section className="mb-16 perspective-1000">
+          <div className="hover:rotate-y-1 transition-transform duration-700">
+            <Suspense fallback={<QuoteDisplaySkeleton />}>
+              <QuoteDisplay quote={SAMPLE_QUOTE} />
+            </Suspense>
+          </div>
+        </section>
+
+        <section className="mb-16">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <Zap className="text-cyan-400" size={20} />
+              <span>Previous Gems</span>
+            </h2>
+          </div>
+
+          <Suspense fallback={<PreviousQuotesSkeleton />}>
+            <PreviousQuotes />
+          </Suspense>
+        </section>
+
+        <section className="mb-16 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 p-8 rounded-2xl border border-purple-800/30 backdrop-blur-sm z-50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2 text-white">
+                Ready to share your wisdom?
+              </h2>
+              <p className="text-gray-300">
+                Join the community of founders who inspire others
+              </p>
+            </div>
+            <SubmitQuoteButton />
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="py-12 relative z-10">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-white/10 pt-8">
+            <div className="text-sm text-gray-400">
+              <div className="font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 mb-1">
+                ShitFast
+              </div>
+              Built by{" "}
+              <span className="underline text-white font-bold">
+                @notamit_dev
+              </span>
+              , for builders.
+            </div>
+            <div className="flex items-center gap-4">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <Twitter size={18} />
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <Github size={18} />
+              </a>
+            </div>
+          </div>
+        </div>
       </footer>
+    </div>
+  );
+}
+
+function QuoteDisplaySkeleton() {
+  return (
+    <div className="bg-black/40 backdrop-blur-md rounded-2xl border border-purple-500/20 shadow-lg shadow-purple-500/10 p-8 mb-8 animate-pulse">
+      <div className="h-6 bg-gray-700 rounded mb-4"></div>
+      <div className="h-6 bg-gray-700 rounded mb-4 w-3/4"></div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <div className="h-10 w-10 rounded-full bg-gray-700"></div>
+          <div className="ml-3">
+            <div className="h-4 bg-gray-700 rounded w-24 mb-2"></div>
+            <div className="h-3 bg-gray-700 rounded w-16"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PreviousQuotesSkeleton() {
+  return (
+    <div className="space-y-6">
+      {[1, 2].map((i) => (
+        <div
+          key={i}
+          className="bg-black/40 backdrop-blur-md rounded-xl border border-purple-500/20 p-6 shadow-lg shadow-purple-500/5 animate-pulse"
+        >
+          <div className="h-4 bg-gray-700 rounded mb-2"></div>
+          <div className="h-4 bg-gray-700 rounded w-3/4 mb-4"></div>
+          <div className="h-3 bg-gray-700 rounded w-1/3"></div>
+        </div>
+      ))}
     </div>
   );
 }
