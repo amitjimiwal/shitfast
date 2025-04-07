@@ -1,0 +1,16 @@
+version: '1'
+services:
+  db:
+    image: postgres
+    volumes:
+      - shitfast:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "4221:5432"
+    environment:
+      POSTGRES_PASSWORD: shitfast
+      POSTGRES_USER: amit
+      POSTGRES_DB: amit
+volumes:
+  shitfast:
+    driver: local

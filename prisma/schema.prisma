@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Quote {
+  id             String    @id @default(uuid())
+  text           String
+  author         String
+  authorUsername String
+  submittedAt    DateTime  @default(now())
+  approved       Boolean   @default(false)
+  featured       Boolean   @default(false)
+  featuredDate   DateTime?
+  score          Float     @default(0)
+  likes          Int       @default(0)
+
+  @@index([approved, featured])
+  @@index([featuredDate])
+  @@index([likes])
+}
+
+
