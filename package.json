@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate": "npx prisma generate && next build",
     "dev": "next dev --turbopack",
-    "build": "npx prisma next build",
     "start": "next start",
-    "postinstall": "npx prisma generate",
+    "build": "npm run generate",
     "lint": "next lint"
   },
   "dependencies": {
