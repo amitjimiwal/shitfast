@@ -98,7 +98,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="py-12 relative z-10">
+      <footer className="py-12 relative">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-white/10 pt-8">
             <div className="text-sm text-gray-400">

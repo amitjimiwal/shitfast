@@ -21,30 +21,30 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
     const timer = setTimeout(() => setIsVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
-
+  const fetchQuote = async () => {
+    const response = await fetch("/api/quotes", {
+      body: JSON.stringify({
+        username: username,
+        quoteText: quoteText,
+      }),
+      method: "POST",
+    });
+    if (!response.ok) throw new Error("Failed to post daily quote");
+    const data = await response.json();
+    return data;
+  };
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
-
+    console.log("Submitting quote:", { username, quoteText });
     try {
       // In production, this would be an actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-
-      // In production:
-      /* 
-      const response = await fetch('/api/quotes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, quoteText })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to submit quote');
+      const resp = await fetchQuote();
+      if (!resp.success) {
+        throw new Error(resp.error);
       }
-      */
-
+      // Simulate a successful submission
+      alert(resp.message);
       setSubmitStatus("success");
       setTimeout(() => {
         onClose();
@@ -194,7 +194,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
               </div>
             )}
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-2 z-[100]">
               <button
                 type="submit"
                 disabled={isSubmitting || isOverLimit}

@@ -5,7 +5,6 @@ import { Rocket } from "lucide-react";
 
 export default function SubmitQuoteButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
     <>
       <button
