@@ -34,7 +34,9 @@ export async function GET() {
                status: 200
           });
      } catch (error) {
-          console.error('Error fetching daily quote:', error);
+          if (process.env.NODE_ENV === 'development') {
+               console.error('Error fetching daily quote:', error);
+          }
           return NextResponse.json({
                success: false,
                error: 'Failed to fetch daily quote'

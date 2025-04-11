@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
           }, { status: 500 });
      }
 }
-// Default
+
 async function evaluateQuoteRelevance(quoteText: string): Promise<number> {
      try {
           const prompt = `
