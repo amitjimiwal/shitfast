@@ -14,20 +14,26 @@ datasource db {
 }
 
 model Quote {
-  id             String    @id @default(uuid())
+  id             String         @id @default(uuid())
   text           String
+  email          String
+  bio            String
   author         String
   authorUsername String
-  submittedAt    DateTime  @default(now())
-  approved       Boolean   @default(false)
-  featured       Boolean   @default(false)
+  submittedAt    DateTime       @default(now())
+  approved       Boolean        @default(false)
+  featured       Boolean        @default(false)
   featuredDate   DateTime?
-  score          Float     @default(0)
-  likes          Int       @default(0)
+  FeaturedQuote  FeaturedQuote?
 
-  @@index([approved, featured])
-  @@index([featuredDate])
-  @@index([likes])
+  @@index([submittedAt])
 }
 
+model FeaturedQuote {
+  id           String   @id @default(uuid())
+  quoteId      String   @unique
+  quote        Quote    @relation(fields: [quoteId], references: [id])
+  featuredDate DateTime
 
+  @@index([featuredDate])
+}

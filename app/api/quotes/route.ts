@@ -1,24 +1,44 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/db/db';
 import { NextRequest, NextResponse } from 'next/server';
 import Groq from "groq-sdk";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const prisma = new PrismaClient()
+
 export async function POST(request: NextRequest) {
      try {
           // Extract data from request body
-          const { username, quoteText } = await request.json();
+          const { username, quoteText, email, bio } = await request.json();
           // Validate input
-          if (!username || !quoteText) {
+          if (!username || !quoteText || !email || !bio) {
+               if (process.env.NODE_ENV === 'development') {
+                    console.error('Request body:', { username, quoteText, email, bio });
+               }
                return NextResponse.json({
                     success: false,
-                    error: 'Username and quote text are required',
+                    error: 'Missing required fields: username, quoteText, email, bio',
                }, { status: 400 });
           }
           // Clean username (remove @ if present)
           const cleanUsername = username.startsWith('@') ? username.substring(1) : username;
-          console.log('Cleaned username:', cleanUsername);
-          const url = `https://x.com/${cleanUsername}/photo`;
-          console.log('URL:', url);
+
+          //check whether the email is already used for a quote for that particular day
+          const currentDayQuotes = await prisma.quote.findMany({
+               where: {
+                    email,
+                    submittedAt: {
+                         gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                         lt: new Date(new Date().setHours(23, 59, 59, 999)),
+                    },
+               },
+          });
+          if (currentDayQuotes.length > 0) {
+               if (process.env.NODE_ENV === 'development') {
+                    console.error('Current day quote already submitted by the user', currentDayQuotes);
+               }
+               return NextResponse.json({
+                    success: false,
+                    error: 'You have already submitted a quote today. Please try again tomorrow.',
+               }, { status: 400 });
+          }
           const relevanceScore = await evaluateQuoteRelevance(quoteText);
           if (relevanceScore < 0.5) {
                return NextResponse.json({
@@ -31,7 +51,8 @@ export async function POST(request: NextRequest) {
                     text: quoteText,
                     author: 'User',
                     authorUsername: cleanUsername,
-                    score: relevanceScore,
+                    email,
+                    bio,
                     approved: relevanceScore > 0.7,
                },
           });
@@ -39,13 +60,11 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
                success: true,
                message: 'Quote submitted successfully',
-               data: {
-                    relevanceScore,
-                    autoApproved: relevanceScore > 0.7,
-               },
           });
      } catch (error) {
-          console.error('Error processing quote submission:', error);
+          if (process.env.NODE_ENV === 'development') {
+               console.error('Error processing quote submission:', error);
+          }
           return NextResponse.json({
                success: false,
                error: 'Failed to process quote submission',
@@ -56,30 +75,40 @@ export async function POST(request: NextRequest) {
 async function evaluateQuoteRelevance(quoteText: string): Promise<number> {
      try {
           const prompt = `
-    You are evaluating quotes for a website that features daily dopamine/inspiration for founders and makers who love to ship products fast.
-    
-    Quote to evaluate: "${quoteText}"
-    
-    Score this quote from 0.0 to 1.0 based on how well it aligns with the themes of:
-    - Shipping products quickly
-    - Building user-focused solutions
-    - Founder/maker mindset
-    - Action over perfectionism
-    - All things related to product development and shipping
-    - Entrepreneurship and innovation
-    - Growth and iteration
-    - User experience and feedback
-    - Building in public
-    - Learning from failure
-    - Embracing challenges and risks
-    - Building a community around your product
-    - The importance of speed and agility in product development
-    - The value of feedback and iteration in the product development process
-    - The importance of user experience in product development
-    - The importance of building in public and sharing your journey with others
-    
-    Only respond with a single number between 0.0 and 1.0, nothing else.
-    `;
+You are evaluating a quote for a website designed to deliver daily dopamine hits and actionable inspiration specifically for founders, makers, and builders who are obsessed with shipping products fast and delivering real value to users.
+
+Evaluate the following quote:
+> "${quoteText}"
+
+Score this quote from 0.0 to 1.0 based on how deeply and directly it aligns with the core themes and values of fast-paced product development and the founder/maker mindset.
+
+Scoring Guidelines (Be Extremely Strict and Thoughtful):
+- Only award high scores (0.8 - 1.0) to quotes that *directly* inspire action, execution, user empathy, iteration, speed, risk-taking, and a bias toward shipping over perfection.
+- Medium scores (0.4 - 0.7) are for quotes that support entrepreneurial thinking or growth mindsets but lack direct relevance to building, shipping, or product execution.
+- Low scores (0.0 - 0.3) are for generic quotes about life, success, or motivation that don’t speak specifically to building products, taking action, or serving users.
+- A perfect score (1.0) should only be given to quotes that could directly motivate a founder to close their browser and go ship something immediately.
+
+Core Themes to Consider:
+- Shipping products fast
+- Building user-first solutions
+- Founder/maker mindset
+- Action over perfection
+- Speed, agility, and iteration
+- Learning from failure and feedback
+- Building in public / transparency
+- Risk-taking and embracing uncertainty
+- Crafting great user experiences
+- Community-driven product building
+- Solving real problems
+- Execution over ideas
+- Progress over polish
+
+Scoring Format:
+Respond with a single number between 0.0 and 1.0 — nothing else.
+
+Be highly critical. Assume the reader is a no-nonsense founder or maker who cares about real-world building, not empty platitudes.
+`;
+
 
           const completion = await groq.chat.completions
                .create({

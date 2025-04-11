@@ -10,6 +10,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
   const [username, setUsername] = useState("");
   const [quoteText, setQuoteText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [submitStatus, setSubmitStatus] = useState<null | "success" | "error">(
     null
   );
@@ -22,6 +23,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
     return () => clearTimeout(timer);
   }, []);
   const fetchQuote = async () => {
+    // POST QUOTE
     const response = await fetch("/api/quotes", {
       body: JSON.stringify({
         username: username,
@@ -29,22 +31,24 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
       }),
       method: "POST",
     });
-    if (!response.ok) throw new Error("Failed to post daily quote");
+    if (!response.ok) {
+      const errorData = await response.json();
+      setError(
+        errorData.error ||
+          "Something went wrong with your submission. Please try again."
+      );
+    }
     const data = await response.json();
     return data;
   };
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
-    console.log("Submitting quote:", { username, quoteText });
     try {
-      // In production, this would be an actual API call
       const resp = await fetchQuote();
       if (!resp.success) {
         throw new Error(resp.error);
       }
-      // Simulate a successful submission
-      alert(resp.message);
       setSubmitStatus("success");
       setTimeout(() => {
         onClose();
@@ -188,9 +192,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
                 </div>
-                <div>
-                  Something went wrong with your submission. Please try again.
-                </div>
+                <div>{error}</div>
               </div>
             )}
 
