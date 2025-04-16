@@ -18,14 +18,13 @@ model Quote {
   text           String
   email          String
   bio            String
-  author         String
+  author         String //For seeded quotes , it's type would be Seed else User
   authorUsername String
   submittedAt    DateTime       @default(now())
   approved       Boolean        @default(false)
   featured       Boolean        @default(false)
   featuredDate   DateTime?
   FeaturedQuote  FeaturedQuote?
-
   @@index([submittedAt])
 }
 
@@ -34,6 +33,5 @@ model FeaturedQuote {
   quoteId      String   @unique
   quote        Quote    @relation(fields: [quoteId], references: [id])
   featuredDate DateTime
-
   @@index([featuredDate])
 }

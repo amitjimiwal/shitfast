@@ -1,8 +1,6 @@
 import { prisma } from '@/lib/db/db';
 import { NextRequest, NextResponse } from 'next/server';
-import Groq from "groq-sdk";
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
+import { groq } from '@/lib/groq';
 export async function POST(request: NextRequest) {
      try {
           // Extract data from request body
