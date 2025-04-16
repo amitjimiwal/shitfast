@@ -1,14 +1,49 @@
 "use client";
 import { useState, FormEvent, useEffect } from "react";
-import { X, Check, Loader2, Send, Quote } from "lucide-react";
+import {
+  X,
+  Check,
+  Loader2,
+  Send,
+  Quote,
+  Mail,
+  User,
+  MessageSquare,
+  Info,
+} from "lucide-react";
 
+// Types
 interface SubmitQuoteModalProps {
   onClose: () => void;
 }
 
+interface FormData {
+  username: string;
+  email: string;
+  bio: string;
+  quoteText: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  error?: string;
+}
+
+// Constants
+const MAX_QUOTE_LENGTH = 280;
+const MAX_BIO_LENGTH = 150;
+const SUCCESS_CLOSE_DELAY = 2000;
+
 export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
-  const [username, setUsername] = useState("");
-  const [quoteText, setQuoteText] = useState("");
+  // Form state
+  const [formData, setFormData] = useState<FormData>({
+    username: "",
+    email: "",
+    bio: "",
+    quoteText: "",
+  });
+
+  // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitStatus, setSubmitStatus] = useState<null | "success" | "error">(
@@ -16,62 +51,91 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
   );
   const [isVisible, setIsVisible] = useState(false);
 
+  // Derived state
+  const remainingQuoteChars = MAX_QUOTE_LENGTH - formData.quoteText.length;
+  const remainingBioChars = MAX_BIO_LENGTH - formData.bio.length;
+  const isQuoteOverLimit = remainingQuoteChars < 0;
+  const isBioOverLimit = remainingBioChars < 0;
+  const isFormValid =
+    formData.username &&
+    formData.email &&
+    formData.quoteText &&
+    !isQuoteOverLimit &&
+    !isBioOverLimit;
+
   // Animation on mount
   useEffect(() => {
-    // Small delay for the animation to be noticeable
     const timer = setTimeout(() => setIsVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
-  const fetchQuote = async () => {
-    // POST QUOTE
-    const response = await fetch("/api/quotes", {
-      body: JSON.stringify({
-        username: username,
-        quoteText: quoteText,
-      }),
-      method: "POST",
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      setError(
-        errorData.error ||
-          "Something went wrong with your submission. Please try again."
-      );
-    }
-    const data = await response.json();
-    return data;
+
+  // Form field change handler
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setIsSubmitting(true);
+
+  // API interaction
+  const submitQuote = async (): Promise<ApiResponse> => {
     try {
-      const resp = await fetchQuote();
-      if (!resp.success) {
-        throw new Error(resp.error);
+      const response = await fetch("/api/quotes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit quote");
       }
+
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error("An unexpected error occurred");
+    }
+  };
+
+  // Form submission
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      await submitQuote();
       setSubmitStatus("success");
+
       setTimeout(() => {
         onClose();
-      }, 2000);
+      }, SUCCESS_CLOSE_DELAY);
     } catch (error) {
       console.error("Error submitting quote:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to submit quote"
+      );
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
-  // Calculate remaining characters (max 280)
-  const maxChars = 280;
-  const remainingChars = maxChars - quoteText.length;
-  const isOverLimit = remainingChars < 0;
+  // Close modal when clicking backdrop
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose();
+  };
 
   return (
     <div
       className="fixed inset-0 bg-slate-900/80 flex items-center justify-center z-50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+      onClick={handleBackdropClick}
     >
       <div
         className={`bg-slate-800 rounded-xl shadow-2xl border border-slate-700 max-w-md w-full p-6 relative transition-all duration-500 ${
@@ -103,68 +167,103 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
         </p>
 
         {submitStatus === "success" ? (
-          <div className="text-center py-8 animate-fadeIn">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 text-white mb-4">
-              <Check size={32} />
-            </div>
-            <p className="text-xl font-medium text-white mb-2">
-              Quote submitted!
-            </p>
-            <p className="text-gray-400">
-              Your quote will be reviewed and may be featured soon.
-            </p>
-          </div>
+          <SuccessMessage />
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
+            <FormField
+              id="username"
+              label="X Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="yourhandle"
+              required
+              hint="(without @)"
+              icon={<User size={16} />}
+            />
+
+            <FormField
+              id="email"
+              label="Email Address"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              required
+              icon={<Mail size={16} />}
+            />
+
             <div className="space-y-1">
-              <label
-                htmlFor="username"
-                className="text-sm font-medium text-gray-300 mb-1 flex items-center"
-              >
-                X Username
-                <span className="ml-1 text-xs text-gray-500">(without @)</span>
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="yourhandle"
-                required
-                className="w-full px-4 py-2 rounded-lg border border-slate-600 bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+              <div className="flex justify-between">
+                <label
+                  htmlFor="bio"
+                  className="block text-sm font-medium text-gray-300 mb-1 flex items-center"
+                >
+                  <Info size={16} className="mr-2" />
+                  Short Bio
+                </label>
+                <span
+                  className={`text-xs ${
+                    isBioOverLimit
+                      ? "text-red-400"
+                      : remainingBioChars < 30
+                      ? "text-yellow-400"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {remainingBioChars} characters left
+                </span>
+              </div>
+              <textarea
+                id="bio"
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                placeholder="Tell us a bit about yourself (optional)"
+                rows={2}
+                maxLength={MAX_BIO_LENGTH}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  isBioOverLimit ? "border-red-500" : "border-slate-600"
+                } bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200`}
               />
+              <p className="mt-1 text-xs text-gray-400 italic">
+                A brief description of who you are (company, role, experience)
+              </p>
             </div>
 
             <div className="space-y-1">
               <div className="flex justify-between">
                 <label
                   htmlFor="quoteText"
-                  className="block text-sm font-medium text-gray-300 mb-1"
+                  className="block text-sm font-medium text-gray-300 mb-1 flex items-center"
                 >
+                  <MessageSquare size={16} className="mr-2" />
                   Your Quote
                 </label>
                 <span
                   className={`text-xs ${
-                    isOverLimit
+                    isQuoteOverLimit
                       ? "text-red-400"
-                      : remainingChars < 50
+                      : remainingQuoteChars < 50
                       ? "text-yellow-400"
                       : "text-gray-400"
                   }`}
                 >
-                  {remainingChars} characters left
+                  {remainingQuoteChars} characters left
                 </span>
               </div>
               <textarea
                 id="quoteText"
-                value={quoteText}
-                onChange={(e) => setQuoteText(e.target.value)}
+                name="quoteText"
+                value={formData.quoteText}
+                onChange={handleChange}
                 placeholder="Share your shipping/building wisdom here..."
                 required
                 rows={4}
-                maxLength={maxChars}
+                maxLength={MAX_QUOTE_LENGTH}
                 className={`w-full px-4 py-3 rounded-lg border ${
-                  isOverLimit ? "border-red-500" : "border-slate-600"
+                  isQuoteOverLimit ? "border-red-500" : "border-slate-600"
                 } bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200`}
               />
               <p className="mt-1 text-xs text-gray-400 italic">
@@ -173,35 +272,16 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
               </p>
             </div>
 
-            {submitStatus === "error" && (
-              <div className="p-3 bg-red-900/30 border border-red-500/50 text-red-200 rounded-lg text-sm flex items-start animate-fadeIn">
-                <div className="mr-2 mt-0.5 text-red-400">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
-                </div>
-                <div>{error}</div>
-              </div>
+            {submitStatus === "error" && error && (
+              <ErrorMessage message={error} />
             )}
 
-            <div className="flex justify-end pt-2 z-[100]">
+            <div className="flex justify-end pt-2">
               <button
                 type="submit"
-                disabled={isSubmitting || isOverLimit}
+                disabled={isSubmitting || !isFormValid}
                 className={`px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-lg font-medium shadow-lg hover:shadow-indigo-500/30 flex items-center justify-center min-w-[100px] transition-all duration-300 ${
-                  isSubmitting || isOverLimit
+                  isSubmitting || !isFormValid
                     ? "opacity-70 cursor-not-allowed"
                     : ""
                 }`}
@@ -219,6 +299,93 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
           </form>
         )}
       </div>
+    </div>
+  );
+}
+
+// Extract reusable components
+function FormField({
+  id,
+  label,
+  name,
+  value,
+  onChange,
+  placeholder,
+  required = false,
+  type = "text",
+  hint,
+  icon,
+}: {
+  id: string;
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  required?: boolean;
+  type?: string;
+  hint?: string;
+  icon?: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1">
+      <label
+        htmlFor={id}
+        className="text-sm font-medium text-gray-300 mb-1 flex items-center"
+      >
+        {icon && <span className="mr-2">{icon}</span>}
+        {label}
+        {hint && <span className="ml-1 text-xs text-gray-500">{hint}</span>}
+      </label>
+      <input
+        id={id}
+        name={name}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+        className="w-full px-4 py-2 rounded-lg border border-slate-600 bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+      />
+    </div>
+  );
+}
+
+function SuccessMessage() {
+  return (
+    <div className="text-center py-8 animate-fadeIn">
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 text-white mb-4">
+        <Check size={32} />
+      </div>
+      <p className="text-xl font-medium text-white mb-2">Quote submitted!</p>
+      <p className="text-gray-400">
+        Your quote will be reviewed and may be featured soon.
+      </p>
+    </div>
+  );
+}
+
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <div className="p-3 bg-red-900/30 border border-red-500/50 text-red-200 rounded-lg text-sm flex items-start animate-fadeIn">
+      <div className="mr-2 mt-0.5 text-red-400">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <div>{message}</div>
     </div>
   );
 }

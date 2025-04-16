@@ -6,9 +6,10 @@ import { groq } from '@/lib/groq';
 export async function GET() {
      try {
           const { startOfYesterday, endOfYesterday } = getPreviousDayValues();
-          const quoteWithMaxScoreandMaxLikes = await prisma.quote.findMany({
+          let quoteWithMaxScoreandMaxLikes = await prisma.quote.findMany({
                where: {
                     approved: true,
+                    author: 'User',
                     submittedAt: {
                          gte: startOfYesterday,
                          lt: endOfYesterday,
@@ -23,6 +24,12 @@ export async function GET() {
 
                //TODO: Logic to Pick up the QUOTE FROM RANDOMSHIPS
                // If no quotes found for yesterday, use seeded quotes
+               quoteWithMaxScoreandMaxLikes = await prisma.quote.findMany({
+                    where: {
+                         approved: true,
+                         author: 'Seed',
+                    }
+               });
           }
 
           LLMQuote = quoteWithMaxScoreandMaxLikes.map((quote) => {

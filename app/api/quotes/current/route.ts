@@ -5,6 +5,7 @@ export async function GET() {
           const currentDayQuotes = await prisma.quote.findMany({
                where: {
                     approved: true,
+                    author:'User',
                     submittedAt: {
                          gte: new Date(new Date().setHours(0, 0, 0, 0)),
                          lt: new Date(new Date().setHours(23, 59, 59, 999))
