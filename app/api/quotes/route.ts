@@ -1,21 +1,34 @@
 import { prisma } from '@/lib/db/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { groq } from '@/lib/groq';
+import { QuotePostSchema } from '@/lib/dto/dto';
 export async function POST(request: NextRequest) {
      try {
-          // Extract data from request body
-          const { username, quoteText, email, bio } = await request.json();
-          // Validate input
-          if (!username || !quoteText || !email || !bio) {
+          const userAgent = request.headers.get('User-Agent');
+          if (userAgent && userAgent.includes('bot')) {
                if (process.env.NODE_ENV === 'development') {
-                    console.error('Request body:', { username, quoteText, email, bio });
+                    console.error('Request from bot:', userAgent);
                }
                return NextResponse.json({
                     success: false,
-                    error: 'Missing required fields: username, quoteText, email, bio',
+                    error: 'Bots are not allowed to submit quotes',
+               }, { status: 403 });
+          }
+          //body parsing
+          const body = await request.json();
+          // Validate input using Zod schema
+          const isValid = QuotePostSchema.safeParse(body);
+
+          if (!isValid.success) {
+               if (process.env.NODE_ENV === 'development') {
+                    console.error('Invalid request body:', isValid.data);
+               }
+               return NextResponse.json({
+                    success: false,
+                    error: isValid.data,
                }, { status: 400 });
           }
-          // Clean username (remove @ if present)
+          const { username, quoteText, bio, email } = body;
           const cleanUsername = username.startsWith('@') ? username.substring(1) : username;
 
           //check whether the email is already used for a quote for that particular day
