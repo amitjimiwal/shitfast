@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db/db";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { QuotePostSchema } from "@/lib/dto/dto";
+import { SeedQuotePostSchema } from "@/lib/dto/dto";
 export async function POST(request: NextRequest) {
      try {
           // Check if the request is from a bot
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
           //body parsing
           const body = await request.json();
           // Validate input using Zod schema
-          const isValid = QuotePostSchema.safeParse(body);
+          const isValid = SeedQuotePostSchema.safeParse(body);
 
           if (!isValid.success) {
                if (process.env.NODE_ENV === 'development') {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
                     error: isValid.data,
                }, { status: 400 });
           }
-          const { username, quoteText, email, bio } = body;
+          const { username, quoteText, bio, email } = body;
           // Clean username (remove @ if present)
           const cleanUsername = username.startsWith('@') ? username.substring(1) : username;
           await prisma.quote.create({
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
                     text: quoteText,
                     author: 'Seed',
                     authorUsername: cleanUsername,
-                    email,
+                    email: email ? email : 'shit-anon@gmail.com',
                     bio,
                     approved: true,
                },

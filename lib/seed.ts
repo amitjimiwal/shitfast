@@ -1,194 +1,117 @@
-export const randomShips = [
+export const seedQuotePosts = [
      {
-          "id": "1",
-          "text": "The only way to do great work is to love what you do.",
-          "author": "Steve Jobs",
-          "authorUsername": "stevejobs",
-          "approved": true,
-          "featured": true
+          username: "SteveJobsFilm", // Official account for the Steve Jobs film
+          quoteText: "The only way to do great work is to love what you do.",
+          bio: "Co-founder of Apple Inc."
      },
      {
-          "id": "2",
-          "text": "Your most unhappy customers are your greatest source of learning.",
-          "author": "Bill Gates",
-          "authorUsername": "billgates",
-          "approved": true,
-          "featured": true
+          username: "BillGates", // Verified account
+          quoteText: "Your most unhappy customers are your greatest source of learning.",
+          bio: "Co-founder of Microsoft Corporation"
      },
      {
-          "id": "3",
-          "text": "Don't worry about failure; you only have to be right once.",
-          "author": "Drew Houston",
-          "authorUsername": "drewhouston",
-          "approved": true,
-          "featured": true
+          username: "drewhouston", // Verified account
+          quoteText: "Don't worry about failure; you only have to be right once.",
+          bio: "Co-founder and CEO of Dropbox"
      },
      {
-          "id": "4",
-          "text": "Chase the vision, not the money; the money will end up following you.",
-          "author": "Tony Hsieh",
-          "authorUsername": "tonyhsieh",
-          "approved": true,
-          "featured": true
+          username: "TonyHsieh101", // Verified account
+          quoteText: "Chase the vision, not the money; the money will end up following you.",
+          bio: "Former CEO of Zappos"
      },
      {
-          "id": "5",
-          "text": "The way to get started is to quit talking and begin doing.",
-          "author": "Walt Disney",
-          "authorUsername": "waltdisney",
-          "approved": true,
-          "featured": true
+          username: "DisneyStudios", // Official account for Walt Disney Studios
+          quoteText: "The way to get started is to quit talking and begin doing.",
+          bio: "Co-founder of The Walt Disney Company"
      },
      {
-          "id": "6",
-          "text": "Move fast and break things. Unless you are breaking stuff, you are not moving fast enough.",
-          "author": "Mark Zuckerberg",
-          "authorUsername": "zuck",
-          "approved": true,
-          "featured": true
+          username: "finkd", // Mark Zuckerberg's account
+          quoteText: "Move fast and break things. Unless you are breaking stuff, you are not moving fast enough.",
+          bio: "Co-founder and CEO of Facebook (now Meta Platforms)"
      },
      {
-          "id": "7",
-          "text": "If you are not embarrassed by the first version of your product, you’ve launched too late.",
-          "author": "Reid Hoffman",
-          "authorUsername": "reidhoffman",
-          "approved": true,
-          "featured": true
+          username: "reidhoffman", // Verified account
+          quoteText: "If you are not embarrassed by the first version of your product, you’ve launched too late.",
+          bio: "Co-founder of LinkedIn"
      },
      {
-          "id": "8",
-          "text": "Ideas are easy. Implementation is hard.",
-          "author": "Guy Kawasaki",
-          "authorUsername": "guykawasaki",
-          "approved": true,
-          "featured": true
+          username: "GuyKawasaki", // Verified account
+          quoteText: "Ideas are easy. Implementation is hard.",
+          bio: "Former Chief Evangelist at Apple"
      },
      {
-          "id": "9",
-          "text": "Stay self-funded as long as possible.",
-          "author": "Garrett Camp",
-          "authorUsername": "garrettcamp",
-          "approved": true,
-          "featured": true
+          username: "gc", // Garrett Camp's account
+          quoteText: "Stay self-funded as long as possible.",
+          bio: "Co-founder of Uber"
      },
      {
-          "id": "10",
-          "text": "The secret to successful hiring is this: look for the people who want to change the world.",
-          "author": "Marc Benioff",
-          "authorUsername": "marcbenioff",
-          "approved": true,
-          "featured": true
+          username: "Benioff", // Marc Benioff's account
+          quoteText: "The secret to successful hiring is this: look for the people who want to change the world.",
+          bio: "Co-founder and CEO of Salesforce"
      },
      {
-          "id": "11",
-          "text": "Risk more than others think is safe. Dream more than others think is practical.",
-          "author": "Howard Schultz",
-          "authorUsername": "howardschultz",
-          "approved": true,
-          "featured": true
+          username: "HowardSchultz", // Verified account
+          quoteText: "Risk more than others think is safe. Dream more than others think is practical.",
+          bio: "Former CEO of Starbucks"
      },
      {
-          "id": "12",
-          "text": "Your most unhappy customers are your greatest source of learning.",
-          "author": "Bill Gates",
-          "authorUsername": "billgates",
-          "approved": true,
-          "featured": true
+          username: "OfficialEdison", // Account representing Thomas Edison
+          quoteText: "The value of an idea lies in the using of it.",
+          bio: "Co-founder of General Electric"
      },
      {
-          "id": "13",
-          "text": "The value of an idea lies in the using of it.",
-          "author": "Thomas Edison",
-          "authorUsername": "thomasedison",
-          "approved": true,
-          "featured": true
+          username: "AlbertEinstein", // Official account managed by CMG Worldwide
+          quoteText: "A person who never made a mistake never tried anything new.",
+          bio: "Theoretical physicist, developer of the theory of relativity"
      },
      {
-          "id": "14",
-          "text": "A person who never made a mistake never tried anything new.",
-          "author": "Albert Einstein",
-          "authorUsername": "alberteinstein",
-          "approved": true,
-          "featured": true
+          username: "bchesky", // Verified account
+          quoteText: "If you want to create a great product, just focus on one person. Make that one person have the most amazing experience ever.",
+          bio: "Co-founder and CEO of Airbnb"
      },
      {
-          "id": "15",
-          "text": "If you want to create a great product, just focus on one person. Make that one person have the most amazing experience ever.",
-          "author": "Brian Chesky",
-          "authorUsername": "bchesky",
-          "approved": true,
-          "featured": true
+          username: "levie", // Verified account
+          quoteText: "The product that wins is the one that bridges customers to the future, not the one that requires a giant leap.",
+          bio: "Co-founder and CEO of Box"
      },
      {
-          "id": "16",
-          "text": "The product that wins is the one that bridges customers to the future, not the one that requires a giant leap.",
-          "author": "Aaron Levie",
-          "authorUsername": "aaronlevie",
-          "approved": true,
-          "featured": true
+          username: "ev", // Evan Williams' account
+          quoteText: "User experience is everything. It always has been, but it's still undervalued and under-invested in.",
+          bio: "Co-founder of Twitter"
      },
      {
-          "id": "17",
-          "text": "User experience is everything. It always has been, but it's still undervalued and under-invested in.",
-          "author": "Evan Williams",
-          "authorUsername": "evanw",
-          "approved": true,
-          "featured": true
+          username: "arrington", // Michael Arrington's account
+          quoteText: "The best startups generally come from somebody needing to scratch an itch.",
+          bio: "Founder of TechCrunch"
      },
      {
-          "id": "18",
-          "text": "The best startups generally come from somebody needing to scratch an itch.",
-          "author": "Michael Arrington",
-          "authorUsername": "arrington",
-          "approved": true,
-          "featured": true
+          username: "stephkorey", // Steph Korey's account
+          quoteText: "An inch toward the bigger goal can actually be a massive step forward.",
+          bio: "Co-founder of Away"
      },
      {
-          "id": "19",
-          "text": "An inch toward the bigger goal can actually be a massive step forward.",
-          "author": "Steph Korey",
-          "authorUsername": "stephkorey",
-          "approved": true,
-          "featured": true
+          username: "lucyliu", // Lucy Liu's account
+          quoteText: "Choose investors who know your industry.",
+          bio: "Actress and director"
      },
      {
-          "id": "20",
-          "text": "Choose investors who know your industry.",
-          "author": "Lucy Liu",
-          "authorUsername": "lucyliu",
-          "approved": true,
-          "featured": true
+          username: "naveentewari", // Naveen Tewari's account
+          quoteText: "As an entrepreneur, you're going to get 100 rejections and one yes. That one yes will give you enough and more kick in life to continue and remain motivated.",
+          bio: "Founder of InMobi"
      },
      {
-          "id": "21",
-          "text": "As an entrepreneur, you're going to get 100 rejections and one yes. That one yes will give you enough and more kick in life to continue and remain motivated.",
-          "author": "Naveen Tewari",
-          "authorUsername": "naveentewari",
-          "approved": true,
-          "featured": true
+          username: "kunalb11", // Kunal Shah's account
+          quoteText: "If you fully accept the worst that can ever happen in your journey, fear won’t ever be an obstacle in starting-up.",
+          bio: "Founder of CRED"
      },
      {
-          "id": "22",
-          "text": "If you fully accept the worst that can ever happen in your journey, fear won’t ever be an obstacle in starting-up.",
-          "author": "Kunal Shah",
-          "authorUsername": "kunalshah",
-          "approved": true,
-          "featured": true
+          username: "peterthiel", // Peter Thiel's account
+          quoteText: "Creating value isn’t enough – you also need to capture some of the value you create.",
+          bio: "Co-founder of PayPal"
      },
      {
-          "id": "23",
-          "text": "Creating value isn’t enough – you also need to capture some of the value you create.",
-          "author": "Peter Thiel",
-          "authorUsername": "peterthiel",
-          "approved": true,
-          "featured": true
-     },
-     {
-          "id": "24",
-          "text": "Life is too short to do mediocre work and it is definitely too short to build shitty things.",
-          "author": "Stewart Butterfield",
-          "authorUsername": "stewart",
-          "approved": true,
-          "featured": true
+          username: "stewart", // Stewart Butterfield's account
+          quoteText: "Life is too short to do mediocre work and it is definitely too short to build shitty things.",
+          bio: "Co-founder and CEO of Slack"
      }
 ];
