@@ -31,7 +31,7 @@ interface ApiResponse {
 
 // Constants
 const MAX_QUOTE_LENGTH = 280;
-const MAX_BIO_LENGTH = 150;
+const MAX_BIO_LENGTH = 20;
 const SUCCESS_CLOSE_DELAY = 2000;
 
 export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
@@ -159,11 +159,11 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
 
         <h2 className="text-2xl font-bold mb-2 text-white flex items-center">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">
-            Submit Your Quote
+            Submit Your Quip
           </span>
         </h2>
         <p className="text-gray-400 text-sm mb-6">
-          Share your wisdom with the ShipFast community
+          Share your Quip with the ShitFast
         </p>
 
         {submitStatus === "success" ? (
@@ -198,7 +198,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
               <div className="flex justify-between">
                 <label
                   htmlFor="bio"
-                  className="block text-sm font-medium text-gray-300 mb-1 flex items-center"
+                  className="text-sm font-medium text-gray-300 mb-1 flex items-center"
                 >
                   <Info size={16} className="mr-2" />
                   Short Bio
@@ -220,7 +220,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                 name="bio"
                 value={formData.bio}
                 onChange={handleChange}
-                placeholder="Tell us a bit about yourself (optional)"
+                placeholder="Tell us a bit about yourself"
                 rows={2}
                 maxLength={MAX_BIO_LENGTH}
                 className={`w-full px-4 py-3 rounded-lg border ${
@@ -228,7 +228,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                 } bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200`}
               />
               <p className="mt-1 text-xs text-gray-400 italic">
-                A brief description of who you are (company, role, experience)
+                A brief description of who you are 
               </p>
             </div>
 
@@ -236,7 +236,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
               <div className="flex justify-between">
                 <label
                   htmlFor="quoteText"
-                  className="block text-sm font-medium text-gray-300 mb-1 flex items-center"
+                  className="text-sm font-medium text-gray-300 mb-1 flex items-center"
                 >
                   <MessageSquare size={16} className="mr-2" />
                   Your Quote
@@ -258,7 +258,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                 name="quoteText"
                 value={formData.quoteText}
                 onChange={handleChange}
-                placeholder="Share your shipping/building wisdom here..."
+                placeholder="Share your shipping/building Quip here..."
                 required
                 rows={4}
                 maxLength={MAX_QUOTE_LENGTH}
@@ -267,7 +267,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                 } bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200`}
               />
               <p className="mt-1 text-xs text-gray-400 italic">
-                Great quotes are concise and focus on shipping products,
+                Great Quips are concise and focus on shipping products,
                 building fast, or founder mindset.
               </p>
             </div>

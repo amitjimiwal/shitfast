@@ -1,23 +1,14 @@
 import { Suspense } from "react";
 import QuoteDisplay from "./components/QuoteDisplay";
-import PreviousQuotes from "./components/PreviousQuotes";
 import SubmitQuoteButton from "./components/SubmitQuoteButton";
-import {
-  Sparkles,
-  Zap,
-  Twitter,
-  Github,
-} from "lucide-react";
+import { Sparkles, Twitter, Github } from "lucide-react";
 const SAMPLE_QUOTE = {
   id: "1",
   text: "The best way to build a product is to start shipping on day one. Iterate relentlessly.",
-  author: "Founder McShipFast",
   authorUsername: "foundermcship",
-  submittedAt: new Date().toISOString(),
   approved: true,
-  featured: true,
   featuredDate: new Date().toISOString(),
-  score: 0.95,
+  bio: "Founder of ShipFast, a platform for builders.",
 };
 
 export default function Home() {
@@ -54,33 +45,19 @@ export default function Home() {
             <span className="absolute -left-8 top-0 text-purple-400 animate-pulse">
               {"<"}
             </span>
-            Daily dose of dopamine for builders who don&apos;t just dream but
-            ship
+            Daily Neuro-boost for builders who don&apos;t just dream but ship
             <span className="absolute -right-8 top-0 text-purple-400 animate-pulse">
               {"/>"}
             </span>
           </p>
         </header>
 
-        <section className="mb-16 perspective-1000">
+        <section className="mb-80 perspective-1000">
           <div className="hover:rotate-y-1 transition-transform duration-700">
             <Suspense fallback={<QuoteDisplaySkeleton />}>
               <QuoteDisplay quote={SAMPLE_QUOTE} />
             </Suspense>
           </div>
-        </section>
-
-        <section className="mb-16">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              <Zap className="text-cyan-400" size={20} />
-              <span>Previous Gems</span>
-            </h2>
-          </div>
-
-          <Suspense fallback={<PreviousQuotesSkeleton />}>
-            <PreviousQuotes />
-          </Suspense>
         </section>
 
         <section className="mb-16 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 p-8 rounded-2xl border border-purple-800/30 backdrop-blur-sm z-50">
@@ -90,7 +67,7 @@ export default function Home() {
                 Ready to share your wisdom?
               </h2>
               <p className="text-gray-300">
-                Join the community of founders who inspire others
+                Join the party of builders who inspire others
               </p>
             </div>
             <SubmitQuoteButton />
@@ -146,23 +123,6 @@ function QuoteDisplaySkeleton() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function PreviousQuotesSkeleton() {
-  return (
-    <div className="space-y-6">
-      {[1, 2].map((i) => (
-        <div
-          key={i}
-          className="bg-black/40 backdrop-blur-md rounded-xl border border-purple-500/20 p-6 shadow-lg shadow-purple-500/5 animate-pulse"
-        >
-          <div className="h-4 bg-gray-700 rounded mb-2"></div>
-          <div className="h-4 bg-gray-700 rounded w-3/4 mb-4"></div>
-          <div className="h-3 bg-gray-700 rounded w-1/3"></div>
-        </div>
-      ))}
     </div>
   );
 }

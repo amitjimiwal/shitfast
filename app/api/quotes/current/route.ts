@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/db';
 export async function GET() {
      try {
+          return NextResponse.json({
+               success: false,
+               error: 'This endpoint is not available yet'
+          }, { status: 401 });
           const currentDayQuotes = await prisma.quote.findMany({
                where: {
                     approved: true,

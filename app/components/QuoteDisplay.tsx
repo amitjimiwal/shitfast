@@ -6,13 +6,10 @@ import { Heart, Share2, Twitter, Copy, Check } from "lucide-react";
 type Quote = {
   id: string;
   text: string;
-  author: string;
   authorUsername: string;
-  submittedAt: string;
   approved: boolean;
-  featured: boolean;
-  featuredDate?: string;
-  score: number;
+  featuredDate: string;
+  bio: string;
 };
 
 export default function QuoteDisplay({ quote }: { quote?: Quote }) {
@@ -21,7 +18,9 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
 
   const handleCopy = () => {
     if (quote) {
-      navigator.clipboard.writeText(`"${quote.text}" - ${quote.author}`);
+      navigator.clipboard.writeText(
+        `"${quote.text}" - ${quote.authorUsername}`
+      );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -36,13 +35,10 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
   const displayQuote = quote || {
     id: "1",
     text: "The best way to build a product is to start shipping on day one. Iterate relentlessly.",
-    author: "Founder McShipFast",
     authorUsername: "foundermcship",
-    submittedAt: new Date().toISOString(),
     approved: true,
-    featured: true,
     featuredDate: new Date().toISOString(),
-    score: 0.95,
+    bio: "Founder of ShipFast, a platform for builders.",
   };
 
   return (
@@ -70,14 +66,14 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
                 <Image
                   width={40}
                   height={40}
-                  src={`/favicon.ico`}
-                  alt={displayQuote.author}
+                  src="/avatar.svg"
+                  alt={displayQuote.authorUsername}
                   className="w-10 h-10 rounded-full"
                 />
               </div>
             </div>
             <div className="ml-3">
-              <p className="font-bold text-white">{displayQuote.author}</p>
+              <p className="font-bold text-white">{displayQuote.bio}</p>
               <p className="text-sm text-gray-400">
                 @{displayQuote.authorUsername}
               </p>
