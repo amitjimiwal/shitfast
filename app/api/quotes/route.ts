@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
                     authorUsername: cleanUsername,
                     email,
                     bio,
-                    approved: relevanceScore > 0.7,
+                    approved: relevanceScore >=0.5,
                },
           });
 
