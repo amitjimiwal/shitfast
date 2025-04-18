@@ -19,7 +19,7 @@ export async function GET() {
           //refactor
           const { id, text, authorUsername, approved, featuredDate, bio } = featuredQuote?.quote;
           return NextResponse.json({
-               success: true, quipOftheDay: {
+               success: true, MaximOftheDay: {
                     id,
                     text,
                     authorUsername,
@@ -27,17 +27,17 @@ export async function GET() {
                     featuredDate,
                     bio,
                },
-               message: 'Quip fetched successfully',
+               message: 'Maxim fetched successfully',
           }, {
                status: 200
           });
      } catch (error) {
           if (process.env.NODE_ENV === 'development') {
-               console.error('Error fetching daily Quip:', error);
+               console.error('Error fetching daily Maxim:', error);
           }
           return NextResponse.json({
                success: false,
-               error: 'Failed to fetch daily Quip'
+               error: 'Failed to fetch daily Maxim'
           }, { status: 500 });
      }
 }

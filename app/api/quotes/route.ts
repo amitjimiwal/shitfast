@@ -2,6 +2,8 @@ import { prisma } from '@/lib/db/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { groq } from '@/lib/groq';
 import { QuotePostSchema } from '@/lib/dto/dto';
+import sendMail from '@/lib/mail';
+import { getQuoteSubmissionTemplate } from '@/lib/template/submit';
 export async function POST(request: NextRequest) {
      try {
           const userAgent = request.headers.get('User-Agent');
@@ -57,6 +59,21 @@ export async function POST(request: NextRequest) {
                     error: 'We encourage you to submit quotes that are more relevant to our community.',
                }, { status: 400 });
           }
+          //check email and send email
+          const responseEmailSent = await sendMail({
+               to: email,
+               subject: 'Wooo! Your Maxim is with us',
+               html: getQuoteSubmissionTemplate(cleanUsername, quoteText),
+          });
+          if (!responseEmailSent.success) {
+               if (process.env.NODE_ENV === 'development') {
+                    console.error('Error sending email:', responseEmailSent.error);
+               }
+               return NextResponse.json({
+                    success: false,
+                    error: 'Failed to verify email !  Please try with correct email.',
+               }, { status: 500 });
+          }
           await prisma.quote.create({
                data: {
                     text: quoteText,
@@ -64,7 +81,7 @@ export async function POST(request: NextRequest) {
                     authorUsername: cleanUsername,
                     email,
                     bio,
-                    approved: relevanceScore >=0.5,
+                    approved: relevanceScore >= 0.5,
                },
           });
 
@@ -91,39 +108,39 @@ You are evaluating a quote for a website designed to deliver daily dopamine hits
 Evaluate the following quote:
 > "${quoteText}"
 
-Score this quote from 0.0 to 1.0 based on how deeply and directly it aligns with the core themes and values of fast-paced product development and the founder/maker mindset.
+Score this quote from 0.0 to 1.0 based on how deeply and directly it aligns with the core themes and values of fast- paced product development and the founder / maker mindset.
 
-Scoring Guidelines (Be Extremely Strict and Thoughtful):
-- Only award high scores (0.8 - 1.0) to quotes that *directly* inspire action, execution, user empathy, iteration, speed, risk-taking, and a bias toward shipping over perfection.
-- Medium scores (0.4 - 0.7) are for quotes that support entrepreneurial thinking or growth mindsets but lack direct relevance to building, shipping, or product execution.
-- Low scores (0.0 - 0.3) are for generic quotes about life, success, or motivation that don’t speak specifically to building products, taking action, or serving users.
-- A perfect score (1.0) should only be given to quotes that could directly motivate a founder to close their browser and go ship something immediately.
+Scoring Guidelines(Be Extremely Strict and Thoughtful):
+               - Only award high scores(0.8 - 1.0) to quotes that * directly * inspire action, execution, user empathy, iteration, speed, risk - taking, and a bias toward shipping over perfection.
+- Medium scores(0.4 - 0.7) are for quotes that support entrepreneurial thinking or growth mindsets but lack direct relevance to building, shipping, or product execution.
+- Low scores(0.0 - 0.3) are for generic quotes about life, success, or motivation that don’t speak specifically to building products, taking action, or serving users.
+- A perfect score(1.0) should only be given to quotes that could directly motivate a founder to close their browser and go ship something immediately.
 
 Core Themes to Consider:
-- Shipping products fast
-- Building user-first solutions
-- Founder/maker mindset
-- Action over perfection
-- Speed, agility, and iteration
-- Learning from failure and feedback
-- Building in public / transparency
-- Risk-taking and embracing uncertainty
-- Crafting great user experiences
-- Community-driven product building
-- Solving real problems
-- Execution over ideas
-- Progress over polish
-- Distribution and reach
-- Market fit and user feedback
-- Moats and defensibility
-- Product-market fit
-- Growth and scaling
-- Hustle and hard work
+          - Shipping products fast
+               - Building user - first solutions
+                    - Founder / maker mindset
+                         - Action over perfection
+                              - Speed, agility, and iteration
+                                   - Learning from failure and feedback
+                                        - Building in public / transparency
+                                        - Risk - taking and embracing uncertainty
+                                             - Crafting great user experiences
+                                                  - Community - driven product building
+                                                       - Solving real problems
+                                                            - Execution over ideas
+                                                                 - Progress over polish
+                                                                      - Distribution and reach
+                                                                           - Market fit and user feedback
+                                                                                - Moats and defensibility
+                                                                                     - Product - market fit
+                                                                                          - Growth and scaling
+                                                                                               - Hustle and hard work
 
 Scoring Format:
 Respond with a single number between 0.0 and 1.0 — nothing else.
 
-Be highly critical. Assume the reader is a no-nonsense founder or maker who cares about real-world building, not empty platitudes.
+Be highly critical.Assume the reader is a no - nonsense founder or maker who cares about real - world building, not empty platitudes.
 `;
 
 

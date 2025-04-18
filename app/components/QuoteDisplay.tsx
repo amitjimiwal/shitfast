@@ -16,7 +16,7 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
   const [liked, setLiked] = useState(false);
   const [copied, setCopied] = useState(false);
   const quoteRef = useRef<HTMLDivElement>(null);
-
+  console.log(quote);
   const handleCopy = () => {
     if (quote) {
       navigator.clipboard.writeText(

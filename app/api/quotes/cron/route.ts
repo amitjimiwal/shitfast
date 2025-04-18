@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db/db';
 import { getPreviousDayValues } from '@/lib/func';
 import { LLMQUOTEINPUT } from '@/lib/types/quote';
 import { groq } from '@/lib/groq';
+import sendMail from '@/lib/mail';
+import { getFeaturedMaximTemplate } from '@/lib/template/featured';
 export async function GET() {
      try {
           const { startOfYesterday, endOfYesterday } = getPreviousDayValues();
@@ -79,6 +81,12 @@ export async function GET() {
                     featuredDate: new Date()
                }
           });
+
+          await sendMail({
+               to: quote.email,
+               subject: 'Your Maxim is Featured',
+               html: getFeaturedMaximTemplate(quote.text, quote.authorUsername),
+          })
           return NextResponse.json({ success: true, message: "Cron Job Has Run successfully" });
      } catch (error) {
           console.error('Error in cron job', error);

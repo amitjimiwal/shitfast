@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     ],
   },
   keywords:
-    "ShitFast, Daily Quips, Founders, Makers, Ship Fast, Build Better, OpenAI, GroQ, ShipFast, Guide for Solopreneur, Indie Hackers",
+    "ShitFast, Daily Maxims, Founders, Makers, Ship Fast, Build Better, OpenAI, GroQ, ShipFast, Guide for Solopreneur, Indie Hackers",
 };
 export default function RootLayout({
   children,

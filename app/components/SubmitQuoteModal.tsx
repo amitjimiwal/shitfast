@@ -159,11 +159,11 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
 
         <h2 className="text-2xl font-bold mb-2 text-white flex items-center">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">
-            Submit Your Quip
+            Submit Your Maxim
           </span>
         </h2>
         <p className="text-gray-400 text-sm mb-6">
-          Share your Quip with ShitFast
+          Share your Maxim with ShitFast
         </p>
 
         {submitStatus === "success" ? (
@@ -228,7 +228,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                 } bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200`}
               />
               <p className="mt-1 text-xs text-gray-400 italic">
-                A brief description of who you are 
+                A brief description of who you are
               </p>
             </div>
 
@@ -258,7 +258,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                 name="quoteText"
                 value={formData.quoteText}
                 onChange={handleChange}
-                placeholder="Share your shipping/building Quip here..."
+                placeholder="Share your shipping/building Maxim here..."
                 required
                 rows={4}
                 maxLength={MAX_QUOTE_LENGTH}
@@ -267,7 +267,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
                 } bg-slate-700/50 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200`}
               />
               <p className="mt-1 text-xs text-gray-400 italic">
-                Great Quips are concise and focus on shipping products,
+                Great Maxims are concise and focus on shipping products,
                 building fast, or founder mindset.
               </p>
             </div>
