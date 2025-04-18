@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import QuoteDisplay from "./components/QuoteDisplay";
 import SubmitQuoteButton from "./components/SubmitQuoteButton";
 import { Sparkles, Twitter, Github } from "lucide-react";
+import Link from "next/link";
 
 async function getDailyQuote() {
   try {
@@ -15,7 +16,7 @@ async function getDailyQuote() {
       throw new Error("Failed to fetch daily quote");
     }
     const data = await response.json();
-    return data.quipOftheDay;
+    return data.MaximOftheDay;
   } catch (error) {
     console.error("Error fetching daily quote:", error);
     return null;
@@ -96,23 +97,33 @@ export default async function Home() {
               </div>
               Built by{" "}
               <span className="underline text-white font-bold">
-                @notamit_dev
+                <Link
+                  href="https://x.com/notamit_dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  @notamit_dev
+                </Link>
               </span>
               , for builders.
             </div>
             <div className="flex items-center gap-4">
-              <a
-                href="#"
+              <Link
+                href="https://x.com/stackforgelabs"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <Twitter size={18} />
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="https://github.com/amitjimiwal"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <Github size={18} />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

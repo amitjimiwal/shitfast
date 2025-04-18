@@ -1,7 +1,7 @@
 "use client";
-import { useState, useRef } from "react";
-import Image from "next/image";
-import { Heart, Twitter, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { Twitter, Copy, Check } from "lucide-react";
+import Link from "next/link";
 
 type Quote = {
   id: string;
@@ -13,10 +13,7 @@ type Quote = {
 };
 
 export default function QuoteDisplay({ quote }: { quote?: Quote }) {
-  const [liked, setLiked] = useState(false);
   const [copied, setCopied] = useState(false);
-  const quoteRef = useRef<HTMLDivElement>(null);
-  console.log(quote);
   const handleCopy = () => {
     if (quote) {
       navigator.clipboard.writeText(
@@ -25,11 +22,6 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
-  };
-
-  const handleLike = () => {
-    //TODO: api to update the like count on click
-    setLiked(!liked);
   };
 
   // If no quote is provided, use a default
@@ -53,7 +45,7 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
   };
 
   return (
-    <div className="relative group" ref={quoteRef}>
+    <div className="relative group">
       <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-2xl blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
       <div className="relative bg-black/60 backdrop-blur-lg rounded-2xl px-8 pt-10 pb-8 shadow-xl hover:shadow-2xl transition duration-300">
         <div className="absolute -top-5 left-8 bg-gradient-to-r from-purple-600 to-cyan-500 p-2 rounded-full shadow-lg shadow-purple-500/30">
@@ -72,37 +64,23 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div className="bg-gradient-to-r from-purple-500 to-cyan-400 rounded-full p-0.5">
-              <div className="bg-black rounded-full p-1">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/avatar.svg"
-                  alt={displayQuote.authorUsername}
-                  className="w-10 h-10 rounded-full"
-                />
-              </div>
-            </div>
-            <div className="ml-3">
-              <p className="font-bold text-white">{displayQuote.bio}</p>
+            <div className="">
               <p className="text-sm text-gray-400">
-                @{displayQuote.authorUsername}
+                <Link
+                  href={`https://x.com/${displayQuote.authorUsername}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  {" "}
+                  @{displayQuote.authorUsername}
+                </Link>
               </p>
+              <p className="font-bold text-white">{displayQuote.bio}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleLike}
-              className={`flex items-center gap-1 p-2 rounded-full transition-all ${
-                liked
-                  ? "text-pink-500 bg-pink-500/10"
-                  : "text-gray-400 hover:text-pink-500 hover:bg-gray-800"
-              }`}
-            >
-              <Heart size={18} className={liked ? "fill-pink-500" : ""} />
-            </button>
-
             <button
               onClick={handleCopy}
               className={`flex items-center gap-1 p-2 rounded-full transition-all ${
