@@ -17,7 +17,7 @@ export async function GET() {
                }
           });
           let LLMQuote: LLMQUOTEINPUT[] = [];
-          if (!quoteWithMaxScoreandMaxLikes) {
+          if (quoteWithMaxScoreandMaxLikes.length === 0) {
                if (process.env.NODE_ENV === 'development') {
                     console.error('No quotes found for yesterday , using the seeded codes Now');
                }
@@ -28,23 +28,20 @@ export async function GET() {
                     where: {
                          approved: true,
                          author: 'Seed',
+                         featured: false,
                     }
                });
           }
 
           LLMQuote = quoteWithMaxScoreandMaxLikes.map((quote) => {
-               const { text, authorUsername, email, bio, approved, featured } = quote;
+               const { id, text, authorUsername, bio } = quote;
                return {
-                    id: quote.id,
+                    id,
                     text,
                     bio,
                     authorUsername,
-                    email,
-                    approved,
-                    featured
                };
           });
-
           const bestQuote = await getBestQuote(LLMQuote);
           if (!bestQuote) {
                throw new Error('Failed to select best quote');
@@ -58,6 +55,9 @@ export async function GET() {
                },
           });
           if (!quote) {
+               if (process.env.NODE_ENV === 'development') {
+                    console.error(`Feature Quote with id  ${bestQuote} not found in the database`);
+               }
                throw new Error('Quote not found');
                //TODO:THINK ABOUT A WORKAROUND
           }
@@ -96,7 +96,7 @@ async function getBestQuote(quotes: LLMQUOTEINPUT[]): Promise<string | null> {
    You will be given an array of quotes in JSON format. 
    
    Task:
-   - Select the SINGLE best quote from the list.
+   - Select the SINGLE best quote from the list. Be extremely strict in your selection. It shouldn't get evaluated by the name of the author or the username.
    - Output the id exactly as given in the input — no modifications.
    
    Selection Criteria (Extremely Strict):

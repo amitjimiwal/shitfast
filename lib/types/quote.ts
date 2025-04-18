@@ -21,6 +21,4 @@ export interface LLMQUOTEINPUT {
      text: string;
      bio: string;
      authorUsername: string;
-     approved: boolean;
-     featured: boolean;
 }

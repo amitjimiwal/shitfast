@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
-import { Heart, Share2, Twitter, Copy, Check } from "lucide-react";
+import { Heart, Twitter, Copy, Check } from "lucide-react";
+import html2canvas from "html2canvas";
 
 type Quote = {
   id: string;
@@ -15,11 +16,12 @@ type Quote = {
 export default function QuoteDisplay({ quote }: { quote?: Quote }) {
   const [liked, setLiked] = useState(false);
   const [copied, setCopied] = useState(false);
+  const quoteRef = useRef<HTMLDivElement>(null);
 
   const handleCopy = () => {
     if (quote) {
       navigator.clipboard.writeText(
-        `"${quote.text}" - ${quote.authorUsername}`
+        `"${quote.text}"\n ${quote.authorUsername}\n ${quote.bio}`
       );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -34,15 +36,25 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
   // If no quote is provided, use a default
   const displayQuote = quote || {
     id: "1",
-    text: "The best way to build a product is to start shipping on day one. Iterate relentlessly.",
-    authorUsername: "foundermcship",
+    text: "All the pleasure of life is in general ideas, but all the uses in life lie in specific solutions.",
+    authorUsername: "Holmes",
     approved: true,
     featuredDate: new Date().toISOString(),
-    bio: "Founder of ShipFast, a platform for builders.",
+    bio: "By ShitFast",
+  };
+  const handleShareOnX = async () => {
+    // Create X share URL
+    const text = `"${displayQuote.text}" - @${displayQuote.authorUsername}\n\nShared via @stackforgelabs 's ShitFast`;
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      text
+    )}`;
+
+    // Open X share dialog
+    window.open(shareUrl, "_blank");
   };
 
   return (
-    <div className="relative group">
+    <div className="relative group" ref={quoteRef}>
       <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-2xl blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
       <div className="relative bg-black/60 backdrop-blur-lg rounded-2xl px-8 pt-10 pb-8 shadow-xl hover:shadow-2xl transition duration-300">
         <div className="absolute -top-5 left-8 bg-gradient-to-r from-purple-600 to-cyan-500 p-2 rounded-full shadow-lg shadow-purple-500/30">
@@ -105,32 +117,12 @@ export default function QuoteDisplay({ quote }: { quote?: Quote }) {
             </button>
 
             <div className="relative group/share">
-              <button className="flex items-center gap-1 p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition-all">
-                <Share2 size={18} />
+              <button
+                onClick={handleShareOnX}
+                className="flex items-center gap-1 p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition-all"
+              >
+                <Twitter size={18} />
               </button>
-
-              <div className="absolute right-0 mt-2 py-2 w-48 bg-gray-900 rounded-xl shadow-xl border border-gray-800 opacity-0 invisible group-hover/share:opacity-100 group-hover/share:visible transition-all duration-300 ease-in-out z-10">
-                <a
-                  href="#"
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
-                >
-                  <Twitter size={16} />
-                  <span>Share on Twitter</span>
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
-                  </svg>
-                  <span>Share on LinkedIn</span>
-                </a>
-              </div>
             </div>
           </div>
         </div>

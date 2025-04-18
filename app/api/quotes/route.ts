@@ -113,6 +113,12 @@ Core Themes to Consider:
 - Solving real problems
 - Execution over ideas
 - Progress over polish
+- Distribution and reach
+- Market fit and user feedback
+- Moats and defensibility
+- Product-market fit
+- Growth and scaling
+- Hustle and hard work
 
 Scoring Format:
 Respond with a single number between 0.0 and 1.0 — nothing else.

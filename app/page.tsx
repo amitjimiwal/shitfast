@@ -2,16 +2,28 @@ import { Suspense } from "react";
 import QuoteDisplay from "./components/QuoteDisplay";
 import SubmitQuoteButton from "./components/SubmitQuoteButton";
 import { Sparkles, Twitter, Github } from "lucide-react";
-const SAMPLE_QUOTE = {
-  id: "1",
-  text: "The best way to build a product is to start shipping on day one. Iterate relentlessly.",
-  authorUsername: "foundermcship",
-  approved: true,
-  featuredDate: new Date().toISOString(),
-  bio: "Founder of ShipFast, a platform for builders.",
-};
 
-export default function Home() {
+async function getDailyQuote() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/quotes/daily`,
+      {
+        next: { revalidate: 3600 }, // Revalidate every hour
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch daily quote");
+    }
+    const data = await response.json();
+    return data.quipOftheDay;
+  } catch (error) {
+    console.error("Error fetching daily quote:", error);
+    return null;
+  }
+}
+
+export default async function Home() {
+  const dailyQuote = await getDailyQuote();
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
       {/* Animated background elements */}
@@ -55,7 +67,7 @@ export default function Home() {
         <section className="mb-80 perspective-1000">
           <div className="hover:rotate-y-1 transition-transform duration-700">
             <Suspense fallback={<QuoteDisplaySkeleton />}>
-              <QuoteDisplay quote={SAMPLE_QUOTE} />
+              <QuoteDisplay quote={dailyQuote} />
             </Suspense>
           </div>
         </section>
