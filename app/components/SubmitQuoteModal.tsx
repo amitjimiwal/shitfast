@@ -31,7 +31,7 @@ interface ApiResponse {
 
 // Constants
 const MAX_QUOTE_LENGTH = 280;
-const MAX_BIO_LENGTH = 20;
+const MAX_BIO_LENGTH = 30;
 const SUCCESS_CLOSE_DELAY = 2000;
 
 export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
@@ -163,7 +163,7 @@ export default function SubmitQuoteModal({ onClose }: SubmitQuoteModalProps) {
           </span>
         </h2>
         <p className="text-gray-400 text-sm mb-6">
-          Share your Quip with the ShitFast
+          Share your Quip with ShitFast
         </p>
 
         {submitStatus === "success" ? (
