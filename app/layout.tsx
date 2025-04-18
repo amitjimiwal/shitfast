@@ -14,12 +14,33 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShitFast  | Daily Dopamine for Builders",
+  title: "ShitFast  | Daily Neuro-boost for Builders",
   description:
-    "Daily dopamine for founders and makers who love to ship fast and build products",
+    "Daily Neuro-boost for founders and makers who love to ship fast and build products",
   icons: {
     icon: "/favicon.ico",
   },
+  openGraph: {
+    title: "ShitFast  | Daily Neuro-boost for Builders",
+    description:
+      "Daily Neuro-boost for founders and makers who love to ship fast and build products",
+    url: "https://shitfast.stackforgelabs.icu",
+    images: [
+      "https://res.cloudinary.com/dejzy9q65/image/upload/v1744973411/Screenshot_Capture_-_2025-04-18_-_16-17-22_k1qjue.png",
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ShitFast  | Daily Neuro-boost for Builders",
+    description:
+      "Daily Neuro-boost for founders and makers who love to ship fast and build products",
+    creator: "@notamit_dev",
+    images: [
+      "https://res.cloudinary.com/dejzy9q65/image/upload/v1744973411/Screenshot_Capture_-_2025-04-18_-_16-17-22_k1qjue.png",
+    ],
+  },
+  keywords:
+    "ShitFast, Daily Quips, Founders, Makers, Ship Fast, Build Better, OpenAI, GroQ, ShipFast, Guide for Solopreneur, Indie Hackers",
 };
 export default function RootLayout({
   children,
