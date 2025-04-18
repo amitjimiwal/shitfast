@@ -85,7 +85,7 @@ export async function GET() {
           await sendMail({
                to: quote.email,
                subject: 'Your Maxim is Featured',
-               html: getFeaturedMaximTemplate(quote.text, quote.authorUsername),
+               html: getFeaturedMaximTemplate(quote.authorUsername, quote.text),
           })
           return NextResponse.json({ success: true, message: "Cron Job Has Run successfully" });
      } catch (error) {
