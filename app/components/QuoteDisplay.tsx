@@ -2,7 +2,6 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { Heart, Twitter, Copy, Check } from "lucide-react";
-import html2canvas from "html2canvas";
 
 type Quote = {
   id: string;
